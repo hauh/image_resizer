@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="/">Назад к списку</a>
+<h1>Новое изображение</h1>
+<form method="POST" enctype="multipart/form-data">{% csrf_token %}
+	<div>
+		<label for="url_upload">Ссылка</label><br>
+		<input name="url_upload" type="text"><br>
+		{% for error in form.url_upload.errors %}
+			<div>{{ error }}</div>
+		{% endfor %}
+	</div><br>
+	<div>
+		<label for="file_upload">Файл</label><br>
+		<input name="file_upload" type="file"><br>
+		{% for error in form.file_upload.errors %}
+			<div>{{ error }}</div>
+		{% endfor %}
+	</div><br>
+	<div>
+		<button type="submit">Загрузить</button>
+		{% for error in form.non_field_errors %}
+			<div>{{ error }}</div>
+		{% endfor %}
+	</div><br>
+</form>
+	
+{% endblock %}

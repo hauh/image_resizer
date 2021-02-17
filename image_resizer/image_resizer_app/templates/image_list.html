@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Список изображений</h1>
+<ul>
+	{% for image in object_list %}
+		<li>{{ image }}</li>
+	{% empty %}
+		<li>Нет доступных изображений.</li>
+	{% endfor %}
+</ul>
+<a href="/upload">Добавить изображение</a> 
+
+{% endblock %}
