@@ -23,8 +23,8 @@ class UploadImage(FormView):
 	form_class = forms.UploadImage
 
 	def form_valid(self, form):
-		if file := form.files['file_upload']:
-			image = Image.objects.create(name=file.name, original=file)
+		file = form.files.get('file_upload') or form.files.get('url_upload')
+		image = Image.objects.create(name=file.name, original=file)
 		return redirect('image-update', image.pk)
 
 

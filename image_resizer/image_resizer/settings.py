@@ -118,3 +118,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_ROOT = BASE_DIR / 'data/images/'
 MEDIA_URL = '/images/'
+FILE_UPLOAD_MAX_SIZE = 1024 * 1024 * 10

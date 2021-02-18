@@ -1,6 +1,12 @@
 """Forms."""
 
+from io import BytesIO
+from urllib import parse, request
+from urllib.error import HTTPError
+
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.files.images import ImageFile
 from django.forms import Form
 from django.forms.fields import ImageField, IntegerField, URLField
 
@@ -14,7 +20,35 @@ class UploadImage(Form):
 	def clean(self):
 		if bool(self.data.get('url_upload')) == bool(self.files.get('file_upload')):
 			raise ValidationError("Выберите что-то одно.")
-		return super().clean()
+
+		cleaned_data = super().clean()
+
+		if url_upload := cleaned_data.get('url_upload'):
+			try:
+				response = request.urlopen(url_upload)
+
+				content_type = response.getheader('Content-Type')
+				if not content_type or not content_type.startswith('image'):
+					raise ValidationError("Ссылка не похожа на изображение.")
+
+				content_length = int(response.getheader('Content-Length', 0))
+				if content_length > settings.FILE_UPLOAD_MAX_SIZE:
+					raise ValidationError("Слишком большой файл.")
+
+				image_bytes = BytesIO()
+				while chunk := response.read(1024 * 1024):
+					image_bytes.write(chunk)
+					if image_bytes.tell() > settings.FILE_UPLOAD_MAX_SIZE:
+						raise ValidationError("Слишком большой файл.")
+
+			except HTTPError as e:
+				raise ValidationError("Ошибка скачивания файла.") from e
+
+			image_name = parse.urlparse(response.url).path.split('/')[-1]
+			image_name += '.' + content_type.removeprefix('image/')
+			self.files['url_upload'] = ImageFile(image_bytes, name=image_name)
+
+		return cleaned_data
 
 
 class ResizeImage(Form):
