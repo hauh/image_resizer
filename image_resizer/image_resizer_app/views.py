@@ -1,5 +1,6 @@
 """Views."""
 
+from django.http.response import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView
 from django.views.generic.edit import FormView
@@ -24,7 +25,7 @@ class UploadImage(FormView):
 	def form_valid(self, form):
 		if file := form.files['file_upload']:
 			image = Image.objects.create(name=file.name, original=file)
-		return redirect(image)
+		return redirect('image-update', image.pk)
 
 
 class ResizeImage(FormView):
@@ -37,6 +38,8 @@ class ResizeImage(FormView):
 		super().setup(request, *args, **kwargs)
 		# pylint: disable=attribute-defined-outside-init
 		self.image = get_object_or_404(Image, pk=kwargs['pk'])
+		if not self.image.assert_existence():
+			raise Http404()
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
