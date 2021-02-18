@@ -3,19 +3,19 @@
 {% block content %}
 
 <a href="{% url 'image-list' %}">Назад к списку</a>
-<h1>Новое изображение</h1>
+<h1>{{ image_name }}</h1>
 <form method="POST" enctype="multipart/form-data">{% csrf_token %}
 	<div>
-		<label for="url_upload">Ссылка</label><br>
-		<input name="url_upload" type="text"><br>
-		{% for error in form.url_upload.errors %}
+		<label for="width">Ширина</label><br>
+		<input name="width" type="text"><br>
+		{% for error in form.width.errors %}
 			<div>{{ error }}</div>
 		{% endfor %}
 	</div><br>
 	<div>
-		<label for="file_upload">Файл</label><br>
-		<input name="file_upload" type="file"><br>
-		{% for error in form.file_upload.errors %}
+		<label for="height">Высота</label><br>
+		<input name="height" type="text"><br>
+		{% for error in form.height.errors %}
 			<div>{{ error }}</div>
 		{% endfor %}
 	</div><br>
@@ -26,5 +26,8 @@
 		{% endfor %}
 	</div><br>
 </form>
-	
+<div>
+	<img src="{{ image_url }}">
+</div>
+
 {% endblock %}

@@ -11,3 +11,6 @@ class Image(Model):
 	name = CharField(max_length=255)
 	original = ImageField(upload_to='original')
 	resized = ImageField(upload_to='resized', null=True)
+
+	def resize(self, width, height):
+		print(width, height)

@@ -6,14 +6,12 @@
 <ul>
 	{% for image in object_list %}
 		<li>
-			<a href="{{ image.original.url }}">
-				<img src="{{ image.original.url }}" height="300">
-			</a>
+			<a href="{% url 'image-update' image.pk %}">{{ image.name }}</a>
 		</li>
 	{% empty %}
 		<li>Нет доступных изображений.</li>
 	{% endfor %}
 </ul>
-<a href="/upload">Добавить изображение</a> 
+<a href="{% url 'image-create' %}">Добавить изображение</a> 
 
 {% endblock %}

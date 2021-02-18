@@ -3,9 +3,13 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from image_resizer_app.views import ListImages, UploadImage
+from django.urls.conf import include
+from image_resizer_app.views import ListImages, UploadImage, ResizeImage
 
 urlpatterns = [
-	path('', ListImages.as_view()),
-	path('upload/', UploadImage.as_view())
+	path('image_resizer/', include([
+		path('', ListImages.as_view(), name='image-list'),
+		path('image/', UploadImage.as_view(), name='image-create'),
+		path('image/<pk>/', ResizeImage.as_view(), name='image-update')
+	]))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
