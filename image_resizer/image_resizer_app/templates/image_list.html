@@ -5,7 +5,11 @@
 <h1>Список изображений</h1>
 <ul>
 	{% for image in object_list %}
-		<li>{{ image }}</li>
+		<li>
+			<a href="{{ image.original.url }}">
+				<img src="{{ image.original.url }}" height="300">
+			</a>
+		</li>
 	{% empty %}
 		<li>Нет доступных изображений.</li>
 	{% endfor %}
