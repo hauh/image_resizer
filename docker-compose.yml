@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    image: 'image_resizer'
+    container_name: 'image_resizer'
+    command: >
+      sh -c "
+        python manage.py test &&
+        python manage.py makemigrations ;
+        python manage.py migrate &&
+        python manage.py runserver 0.0.0.0:8000
+      "
+    ports:
+      - ${PORT}:8000
+    volumes: 
+      - ./data:/opt/app/data
+    env_file: '.env'
+    restart: always
