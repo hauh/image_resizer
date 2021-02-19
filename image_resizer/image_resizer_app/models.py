@@ -21,6 +21,7 @@ class Image(Model):
 		image.thumbnail((width or height, height or width))
 		image_bytes = BytesIO()
 		image.save(image_bytes, format='png')
+		image.close()
 		self.resized.delete(save=False)
 		self.resized.save(self.name, ImageFile(image_bytes))
 

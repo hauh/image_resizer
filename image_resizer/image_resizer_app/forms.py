@@ -2,7 +2,7 @@
 
 from io import BytesIO
 from urllib import parse, request
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -41,11 +41,12 @@ class UploadImage(Form):
 					if image_bytes.tell() > settings.FILE_UPLOAD_MAX_SIZE:
 						raise ValidationError("Слишком большой файл.")
 
-			except HTTPError as e:
+			except (HTTPError, URLError) as e:
 				raise ValidationError("Ошибка скачивания файла.") from e
 
 			image_name = parse.urlparse(response.url).path.split('/')[-1]
-			image_name += '.' + content_type.removeprefix('image/')
+			if '.' not in image_name:
+				image_name += '.' + content_type.removeprefix('image/')
 			self.files['url_upload'] = ImageFile(image_bytes, name=image_name)
 
 		return cleaned_data
